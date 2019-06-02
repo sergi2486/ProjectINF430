@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Management Resource</title>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="bootstrap/css/font-awesome.min.css"  rel="stylesheet" />
+	<link href="bootstrap/css/datepicker3.css"  rel="stylesheet" />
+	<link href="bootstrap/css/styles.css"  rel="stylesheet" />
+	<link href="css/myStyle.css" rel="stylesheet" />
+	<link href="bootstrap/css/style_grid.css" />
+	
+	<!--Custom Font-->
+
+	<!--[if lt IE 9]>
+	<script src="js/html5shiv.js"></script>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body ng-app="monModule" ng-controller="GetLogedCtrl">
+	 <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span></button>
+				<a class="navbar-brand" href="#"><span>Management</span>Resource</a>
+				
+			</div>
+		</div>
+	</nav>
+	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
+		<div class="profile-sidebar">
+			<div class="profile-userpic">
+				<!-- <img src="http://placehold.it/50/30a5ff/fff" class="img-responsive" alt="">-->
+			</div>
+			<div class="profile-usertitle">
+				<div class="profile-usertitle-name">{{user.username | uppercase}}</div>
+				<div class="profile-usertitle-status"><span class="indicator label-success"></span>Connecté</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="divider"></div>
+		
+		<ul class="nav menu">
+			
+			<!-- <li><a href="charts.html"><em class="fa fa-calendar">&nbsp;</em> Créer un EDT</a></li>-->
+			
+			
+			<li class="parent "><a data-toggle="collapse" href="#sub-item-1">
+				<em class="fa fa-calendar">&nbsp;</em> Emploi de temps <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"></span>
+				</a>
+				<ul class="children collapse" id="sub-item-1">
+					
+					<li class="clickable" >
+						<a href="cours_magistral.html">
+							<span class="fa fa-arrow-right">&nbsp;</span> Cours magistral
+						</a>
+						<a href="examen.html">
+							<span class="fa fa-arrow-right">&nbsp;</span> Exmens
+						</a>
+					</li>
+
+				</ul>
+			</li>
+			<li><a href="historique.html"><em class="fa fa-toggle-off">&nbsp;</em> Afficher l'historique</a></li>
+			<li><a href="logout"><em class="fa fa-power-off ">&nbsp;</em> Deconnexion </a></li>
+			
+		</ul>
+	</div>
+		
+	<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main" ng-controller="HeureCouranteCtrl">
+		<div class="row">
+			<ol class="breadcrumb">
+				<li><a href="index.html">
+					<em class="fa fa-home"></em>
+				</a></li>
+				<li class="active">Ressources / {{ dateCourante }}</li>
+			</ol>
+		</div><!--/.row-->
+		<ul class="nav nav-pills">
+		  <li class="active"><a data-toggle="pill" href="#home">Accueil</a></li>
+		  <li><a data-toggle="pill" href="#affectation">Affectation</a></li>
+		  <li><a data-toggle="pill" href="#reservation">Reservation des ressources</a></li>
+		   <li><a data-toggle="pill" href="#liste_ressources">Affichage</a></li>
+		</ul>
+		
+		<div class="tab-content">
+		  <div id="home" class="tab-pane fade in active">
+		  		<div class="row">
+			
+			<div class="col-md-6">
+				<div class="col-lg-12">
+					<h3 class="page-header">Liste des ressources</h3>
+				</div>
+				<form >
+					<div class="form-group">
+						<input type="text"  class="form-control" placeholder="Chercher une ressource" ng-model="query">
+					</div>
+				
+				
+				<div style="overflow-y: scroll; height: 400px" ng-controller="AjouterRessourceCtrl">
+
+						<div class="panel panel-default articles" ng-repeat="r in ressources | filter:query">
+							<div class="panel-heading">
+								
+								<ul class="pull-right panel-settings panel-button-tab-right">
+									<li class="dropdown"><a class="pull-right dropdown-toggle" data-toggle="dropdown" href="#">
+										<em class="fa fa-cogs"></em>
+									</a>
+										<ul class="dropdown-menu dropdown-menu-right">
+											<li>
+												<ul class="dropdown-settings">
+													<li><a href="modifier?nom={{r.nom}}">
+														<em class="fa fa-cog"></em> Modifier
+													</a></li>
+													<li class="divider"></li>
+													<li><a href="{{r.nom}}">
+														<em class="fa fa-cog"></em> Ajouter
+													</a></li>
+													<li class="divider"></li>
+													<li><a onclick="return confirm('Voulez-vous supprimer cette ressource ?')" href="supprimer{{r.nom}}">
+														<em class="fa fa-cog"></em> Supprimer
+													</a></li>
+													
+													
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+								<span class="pull-right clickable panel-toggle panel-button-tab-left"><em class="fa fa-toggle-up"></em></span></div>
+							<div class="panel-body articles-container">
+								<div class="article border-bottom">
+									<div class="col-xs-12">
+										<div class="row">
+											<div class="col-xs-2 col-md-2 date">
+												<div class="large">{{ r.nom }}</div>
+												 <div class="text-muted">{{ r.type_ressource }}</div> 
+											</div>
+											<div class="col-xs-offset-4 col-md-offset-5">
+												<h4><a href="reserver?nom={{r.nom}}"> Réserver la ressource </a></h4>
+												<p >{{ r.description }}</p>
+											</div>
+										</div>
+									</div>
+									<div class="clear"></div>
+								</div><!--End .article-->
+
+							</div>
+						</div><!--End .articles-->
+					
+					</div>
+				</form>
+			</div>
+			
+		
+			<!--/.col-->
+			
+			<div class="col-md-6">
+				<h3 class="page-header">Calendrier</h3>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						{{ dateCourante }}
+						<span class="pull-right clickable panel-toggle panel-button-tab-left"><em class="fa fa-toggle-up"></em></span>
+					</div>
+					<div class="panel-body">
+						<div id="calendar"></div>
+					</div>
+				</div>
+			</div><!--/.col-->
+			
+		
+		</div><!--/.row-->
+		  </div>
+		  <div id="affectation" class="tab-pane fade">
+		         <ul class="nav nav-pills">
+				  <li class="active"><a data-toggle="pill" href="#ressource">Ressources</a></li>
+				  <li><a data-toggle="pill" href="#utilisateur">Utilisateurs</a></li>
+				  <li><a data-toggle="pill" href="#autre">Autres</a></li>
+				</ul>
+				
+					
+				 <div class="tab-content">
+				  <div id="ressource" class="tab-pane fade in active">
+				    <div class="row">
+						<div class="col-md-12">
+							<fieldset>
+								<legend>Ressources</legend>
+								<form>
+									<div class="row"  ng-controller="AjouterRessourceCtrl">
+										<div class="col-md-6">
+											<div class="from-group" ng-controller="AjouterTypeRessourceCtrl">
+												<label>Type: </label>
+												<select class="form-control" ng-model="ressource.type_ressource" >
+													<option ng-repeat="tr in typeRessources">{{ tr.nom | uppercase }} </option>
+												</select>
+												<span ng-if="errors" class="text-danger">{{errors.type_ressource}}</span>
+											</div>
+											<div class="form-group" ng-controller="AjouterFaculteCtrl">
+												<label>Faculté: </label>
+												<select class="form-control" ng-model="ressource.faculte">
+													<option ng-repeat="f in facultes">{{f.nom | uppercase}}</option>
+												</select>
+												<span ng-if="errors" class="text-danger">{{errors.faculte}}</span>
+											</div>
+											<div class="form-group" ng-controller="AjouterFiliereCtrl">
+												<label>Filière: </label>
+												<select class="form-control" ng-model="ressource.filiere">
+													<option ng-repeat="f in filieres">{{ f.nom | uppercase }}</option>
+												</select>
+												
+											</div>
+											<!-- <div ng-controller="GetLogedCtrl">
+												<input type="text" value="{{user.username | uppercase}}" ng-model="ressource.user" />
+											</div>-->
+											
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Nom:</label>
+												<td><input type="text" class="form-control" ng-model="ressource.nom"/></td>
+												<span ng-if="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+											<div class="form-group" ng-controller="AjouterFaculteCtrl">
+												<label>Caractéristique: </label>
+												<textarea class="form-control" ng-model="ressource.carac"></textarea>
+											</div>
+											
+											<div>
+												<button class="btn btn-primary pull-right" ng-click="saveRessource()">Ajouter</button>
+											</div>
+										</div>
+											
+										
+									</div>								
+		
+								</form>
+							</fieldset>
+																
+						</div>
+						
+					</div>
+					<br >
+				
+				  </div>
+				  <div id="utilisateur" class="tab-pane fade">
+				   	<div class="row">
+				   		<div class="col-md-12">
+							<fieldset>
+								<legend>Utilisateur</legend>
+								<form>
+									<div class="row" ng-controller="AjouterUserCtrl">
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Nom: </label>
+												<input type="text" class="form-control" ng-model="user.username" placeholder="Nom"/>
+												<span ng-if="errors" class="text-danger">{{ errors.username }}</span>
+											</div>
+										</div>
+										<div class="col-md-4">
+											<div class="form-group">
+												<label>Mot de passe: </label>
+												<input type="text" class="form-control" ng-model="user.password" placeholder="mot de passe"/>
+												<span ng-if="errors" class="text-danger">{{ errors.password }}</span>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group" ng-controller="AjouterFiliereCtrl">
+												<label>Filière: </label>
+												<select class="form-control" ng-model="user.filiere">
+													<option ng-repeat="f in filieres"> {{ f.nom | uppercase }}</option>
+												</select>
+												<span ng-if="errors" class="text-danger">{{ errors.filiere }}</span>
+											</div>
+											<button class="btn btn-primary" ng-click="saveUser()">Ajouter</button>
+										</div>
+										<div class="col-md-2">
+											
+												
+											
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-4">
+											<div class="form-group" ng-controller="AjouterUserCtrl">
+												<label>Utilisateur: </label>
+												<select class="form-control" ng-model="user.id_user">
+													<option ng-repeat="u in users">{{ u.username }}</option>
+												</select>
+											</div>
+											
+										</div>
+										<div class="col-md-4" ng-controller="AjouterRoleToUserCtrl">
+											<div class="form-group">
+												<label>Role: </label>
+												<select class="form-control" ng-model="role.id_role">
+													<option value=""></option>
+													<option value="ADMIN">ADMIN</option>
+													<option value="PROF">PROF</option>
+												</select>
+											</div>
+											<div>
+												<button class="btn btn-primary" ng-click="saveRoleToUser()">Affecter</button>
+											</div>
+										</div>
+										<div class="col-md-4">
+											
+										</div>
+									</div>
+								</form>
+								
+							</fieldset>
+							
+						</div>
+				   	</div>
+				  </div>
+				  <div id="autre" class="tab-pane fade">
+				   	  	<div class="row">
+						<div class="col-md-12">
+							<fieldset>
+								<legend>Autres ressources</legend>
+								<form> 
+									<div class="row" ng-controller="AjouterFaculteCtrl">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Faculté: </label>
+												<input type="text" class="form-control" ng-model="faculte.nom" />
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-primary" ng-click="saveFaculte()">Ajouter</button>
+											</div>
+										</div>
+									</div>
+								</form>
+								<form>
+									<div class="row">
+										<div class="col-md-6" ng-controller="AjouterFiliereCtrl">
+											<div class="form-group">
+												<label>Filière: </label>
+												<input type="text" class="form-control" ng-model="filiere.nom" />
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-primary" ng-click="saveFiliere()">Ajouter</button>
+											</div>
+										</div>
+										<div class="col-md-3" >
+											<div class="form-group" ng-controller="AjouterFaculteCtrl">
+												<label>Faculté: </label>
+												<select class="form-control" ng-model="filiere.faculte">
+													<option ng-repeat="f in facultes">{{f.nom | uppercase}}</option>
+												</select>
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+										</div>
+									</div>
+								</form>
+								<form>
+									<div class="row">
+										<div class="col-md-6" ng-controller="AjouterClasseCtrl">
+											<div class="form-group">
+												<label>Classe: </label>
+												<input type="text" class="form-control" placeholder="Classe" ng-model="classe.nom" />
+											</div>
+											<span ng-if="errors" class="text-danger">{{ errors.nom }} </span>
+											<div class="form-group">
+												<button class="btn btn-primary" ng-click="saveClasse()">Ajouter</button>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group" ng-controller="AjouterFiliereCtrl">
+												<label>Filière: </label>
+												<select class="form-control" ng-model="classe.filiere">
+													<option ng-repeat="f in filieres">{{ f.nom | uppercase }}</option>
+												</select> 
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+										</div>
+										
+										
+									</div>
+								</form>
+								<form>
+									<div class="row">
+										<div class="col-md-6" ng-controller="AjouterUECtrl">
+											<div class="form-group">
+												<label>UE: </label>
+												<input type="text" class="form-control" ng-model="ue.nom" />
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-primary" ng-click="saveUE()">Ajouter</button>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group" ng-controller="AjouterClasseCtrl">
+												<label>Classe: </label>
+												<select class="form-control" ng-model="ue.classe">
+													<option ng-repeat="c in classes">{{ c.nom | uppercase }}</option>
+												</select> 
+												<span if-ng="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+										</div>
+									</div>
+								</form>
+								<form>
+									<div class="row" ng-controller="AjouterTypeRessourceCtrl">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Type de ressource: </label>
+												<input type="text" class="form-control" ng-model="typeRessource.nom"  placeholder="Type ressource" />
+												<span ng-if="errors" class="text-danger">{{errors.nom}}</span>
+											</div>
+											<div class="form-group">
+												<button class="btn btn-primary" ng-click="saveTypeRessource()">Ajouter</button>
+											</div>
+											<div class="form-group">
+												<a href="" ng-click="actualiser()" class="pull-right">Actualiser</a>
+											</div>
+										</div>
+									</div>
+								</form>
+							</fieldset>
+						</div>
+					</div>
+				  </div>
+				</div>
+		    
+		  </div>
+		  <div id="reservation" class="tab-pane fade">
+		  	<ul class="nav nav-pills">
+				  <li class="active"><a data-toggle="pill" href="#cours">Cours magistral</a></li>
+				  <li><a data-toggle="pill" href="#examen">Examens</a></li>
+				  <li><a data-toggle="pill" href="#autre">Autres</a></li>
+				 
+				  
+				</ul>
+				
+		  	
+		  			<!--<div ng-controller="AjouterTypeRessourceCtrl">
+		  				<select class="form-control">
+					    	<option ng-repeat="tr in typeRessources">{{ tr.nom | uppercase }}</option>
+					    </select>
+		  			</div>-->
+		  			
+			
+				<div class="tab-content">
+				  <div id="cours" class="tab-pane fade in active">
+				    <div class="col-md-12" >
+				
+					<h3 class="page-header">Créer votre emploi de temps</h3>
+					<form ng-controller="AjouterReservationCtrl">
+						<div class="row">
+							<!--<div class="col-md-4">
+								<label>Date début:</label>
+								<input type="date" class="form-control" placeholder="Date début" ng-model="reservaion.date_debut"/>
+							</div>
+							<div class="col-md-4">
+								<label>Date fin:</label>
+								<input type="date" class="form-control" placeholder="Date début" ng-model="reservaion.date_fin"/>
+							</div>-->
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterFaculteCtrl">
+									<label for="nom">Faculté: </label>
+									<select class="form-control" ng-model="reservation.faculte">
+										<option ng-repeat="f in facultes">{{ f.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<!--<div class="col-md-4">
+								<div class="form-group" ng-controller="TypeReservationCtrl">
+									<label for="nom" class=""> Type: </label>
+									<select class="form-control" ng-model="reservation.type_reservation">
+										<option ng-repeat="tr in type_reservations">{{ tr.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>-->
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterUserCtrl">
+									<label for="nom" class="fa fa-"> Enseignant: </label>
+									<select class="form-control"ng-model="reservation.enseignant">
+										<option ng-repeat="u in users">{{ u.username | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="nom">Semestre: </label>
+									<select class="form-control" ng-model="reservation.semestre">
+										<option value="Semestre 1">Semestre 1</option>
+										<option value="Semestre 2">Semestre 2</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="nom">Jour: </label>
+									<select class="form-control" ng-model="reservation.jour">
+										<option value="Lundi">Lundi</option>
+										<option value="Mardi">Mardi</option>
+										<option value="Mercredi">Mercredi</option>
+										<option value="Jeudi">Jeudi</option>
+										<option value="Vendredi">Vendredi</option>
+										<option value="Samedi">Samedi</option>
+										<option value="Dimanche">Dimanche</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterClasseCtrl">
+									<label for="nom">Classe: </label>
+									<select class="form-control" ng-model="reservation.classe">
+										<option ng-repeat="c in classes">{{ c.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							 
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group"  ng-controller="AjouterRessourceCtrl">
+									<label for="nom"> Ressource: </label>
+									<select class="form-control"ng-model="reservation.ressource">
+										<option ng-repeat="r in ressources">{{ r.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4" ng-controller="AjouterFiliereCtrl">
+								<div class="form-group">
+									<label for="nom">Filière: </label>
+									<select class="form-control"ng-model="reservation.filiere">
+										<option ng-repeat="f in filieres">{{ f.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4" ng-controller="AjouterUECtrl">
+								<div class="form-group">
+									<label for="nom">UE: </label>
+									<select class="form-control"ng-model="reservation.ue">
+										<option ng-repeat="u in ues">{{ u.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							 
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure début:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_deb" />
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure fin:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_fin" />
+							   </div>
+							</div>
+							
+							
+						</div>
+							<div class="row">
+							<!--<div class="col-md-4">
+								<div class="form-group">
+									<label>Observation:</label>
+									<input type="tex" class="form-control" ng-model="reservation.observation" />
+							   </div>
+							</div>-->
+							<!--<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure fin:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_fin" />
+							   </div>
+							</div>-->
+							<div class="col-md-4">
+								<!--<div class="form-group">
+									<label for="nom" class="fa fa-user"> Type: </label>
+									<select class="form-control"ng-model="reservation.nom">
+										<option ng-repeat="r in reservations">{{ r.nom | uppercase }}</option>
+									</select>
+							   </div>-->
+							</div>
+							
+						</div>
+					
+						<!--<input type="date" class="form-control" ng-model="ressource.date"  />-->
+						<button ng-click="saveReservation()" class="btn btn-primary" >Ajouter</button>
+						
+						<!-- <span ng-if="success" class="text-success" style="font-size: 1.2em">{{success}}</span> -->
+						
+					</form>
+					
+				  </div>
+				 </div>
+				 	<!-- Emploi de temps cours magistraux -->
+				 <div id="examen" class="tab-pane fade in active">
+				 		<div class="col-md-12" >
+				
+					<h3 class="page-header">Créer votre emploi de temps</h3>
+					<form ng-controller="AjouterReservationCtrl">
+						<div class="row">
+							<!--<div class="col-md-4">
+								<label>Date début:</label>
+								<input type="date" class="form-control" placeholder="Date début" ng-model="reservaion.date_debut"/>
+							</div>
+							<div class="col-md-4">
+								<label>Date fin:</label>
+								<input type="date" class="form-control" placeholder="Date début" ng-model="reservaion.date_fin"/>
+							</div>-->
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterFaculteCtrl">
+									<label for="nom">Faculté: </label>
+									<select class="form-control" ng-model="reservation.faculte">
+										<option ng-repeat="f in facultes">{{ f.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<!--<div class="col-md-4">
+								<div class="form-group" ng-controller="TypeReservationCtrl">
+									<label for="nom" class=""> Type: </label>
+									<select class="form-control" ng-model="reservation.type_reservation">
+										<option ng-repeat="tr in type_reservations">{{ tr.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>-->
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterUserCtrl">
+									<label for="nom" class="fa fa-"> Enseignant: </label>
+									<select class="form-control"ng-model="reservation.enseignant">
+										<option ng-repeat="u in users">{{ u.username | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="nom">Semestre: </label>
+									<select class="form-control" ng-model="reservation.semestre">
+										<option value=""></option>
+										<option value="Semestre 1">Semestre 1</option>
+										<option value="Semestre 2">Semestre 2</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="nom">Jour: </label>
+									<select class="form-control" ng-model="reservation.jour">
+										<option value="Lundi">Lundi</option>
+										<option value="Mardi">Mardi</option>
+										<option value="Mercredi">Mercredi</option>
+										<option value="Jeudi">Jeudi</option>
+										<option value="Vendredi">Vendredi</option>
+										<option value="Samedi">Samedi</option>
+										<option value="Dimanche">Dimanche</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group" ng-controller="AjouterClasseCtrl">
+									<label for="nom">Classe: </label>
+									<select class="form-control" ng-model="reservation.classe">
+										<option ng-repeat="c in classes">{{ c.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							 
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group"  ng-controller="AjouterRessourceCtrl">
+									<label for="nom"> Ressource: </label>
+									<select class="form-control"ng-model="reservation.ressource">
+										<option ng-repeat="r in ressources">{{ r.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4" ng-controller="AjouterFiliereCtrl">
+								<div class="form-group">
+									<label for="nom">Filière: </label>
+									<select class="form-control"ng-model="reservation.filiere">
+										<option ng-repeat="f in filieres">{{ f.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							<div class="col-md-4" ng-controller="AjouterUECtrl">
+								<div class="form-group">
+									<label for="nom">UE: </label>
+									<select class="form-control"ng-model="reservation.ue">
+										<option ng-repeat="u in ues">{{ u.nom | uppercase }}</option>
+									</select>
+							   </div>
+							</div>
+							 
+						</div>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure début:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_deb" />
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure fin:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_fin" />
+							   </div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Observation:</label>
+									<textarea class="form-control" ng-model="reservation.observation" ></textarea>
+							   </div>
+							</div>
+							
+						</div>
+							<div class="row">
+							<!--<div class="col-md-4">
+								<div class="form-group">
+									<label>Observation:</label>
+									<input type="tex" class="form-control" ng-model="reservation.observation" />
+							   </div>
+							</div>-->
+							<!--<div class="col-md-4">
+								<div class="form-group">
+									<label>Heure fin:</label>
+									<input type="time" class="form-control" ng-model="reservation.heure_fin" />
+							   </div>
+							</div>-->
+							<div class="col-md-4">
+								<!--<div class="form-group">
+									<label for="nom" class="fa fa-user"> Type: </label>
+									<select class="form-control"ng-model="reservation.nom">
+										<option ng-repeat="r in reservations">{{ r.nom | uppercase }}</option>
+									</select>
+							   </div>-->
+							</div>
+							
+						</div>
+					
+						<!--<input type="date" class="form-control" ng-model="ressource.date"  />-->
+						<button ng-click="saveReservation()" class="btn btn-primary" >Ajouter</button>
+						
+						<!-- <span ng-if="success" class="text-success" style="font-size: 1.2em">{{success}}</span> -->
+						
+					</form>
+					
+				  </div>
+				 </div>
+				  <div id="autre" class="tab-pane fade">
+				  		
+				  </div>
+			 </div>
+			 <!-- fin de tab-content -->
+			 
+		  </div>
+
+		   <div id="liste_ressources" class="tab-pane fade">
+		   
+		     <ul class="nav nav-pills">
+				  <li class="active"><a data-toggle="pill" href="#res">Ressources</a></li>
+				  <li><a data-toggle="pill" href="#ens">Enseignant</a></li>
+				  <li><a data-toggle="pill" href="#fil">Filière</a></li>
+				  <li><a data-toggle="pill" href="#cl">Classe</a></li>
+				  <li><a data-toggle="pill" href="#ue">Unité d'enseignement</a></li>
+				  
+				</ul>
+				
+		    	 <div class="tab-content">
+				  <div id="res" class="tab-pane fade in active">
+				  <div class="row">
+				  	<div class="col-md-6">
+				  		<form>
+							<div class="form-inline">
+								<input type="text" class="form-control" placeholder="Rercherche" ng-model="query" />
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterTypeRessourceCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Type
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="t in typeRessources">{{ t.nom | uppercase }}</a></li>
+						    
+						    
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFaculteCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Faculte
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li ng-repeat="f in facultes"><a ng-click="selectType()" href="#">{{ f.nom | uppercase }}</a></li>
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFiliereCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filière
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    
+						    <li><a href="#" ng-repeat="f in filieres">{{ f.nom | uppercase }}</a></li>
+						    
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+					
+				  </div>
+				    
+					
+				    <div style="overflow-y: scroll; height: 400px;" ng-controller="AjouterRessourceCtrl">
+					<div class="panel-body"  ng-repeat="r in ressources | filter:query">
+					
+						<ul class="todo-list" >
+							<li class="todo-list-item" >
+								<span>{{ r.nom | uppercase }} -  [{{ r.type_ressource | uppercase }}] - [{{ r.carac | uppercase }}] - [{{ r.date | date:'Crée le dd / MM / yyyy' }}] à {{ r.date | date:'HH:mm' }}</span>
+								
+								<div class="pull-right action-buttons">
+									
+									<a onclick="return confirm('Voulez-vous supprimer cette faculte?')"
+									 title="Supprimer" class="trash">
+										<em class="fa fa-trash"></em>
+									</a>
+									 
+									<a  title="Modifier" class="edit">
+										<em class="fa fa-edit"></em>
+									</a>
+									<a th:href="" title="détail" class="trash">
+										<em class="fa fa-more"></em>
+									</a>
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+				  </div>
+				  <div id="ens" class="tab-pane fade">
+				  
+				  <div class="row">
+				  	<div class="col-md-6">
+				  		<form>
+							<div class="form-inline">
+								<input type="text" class="form-control" placeholder="Rercherche" ng-model="query"/>
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFaculteCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Faculté
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="f in facultes">{{ f.nom | uppercase }}</a></li>
+						    
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFiliereCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filière
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="f in filieres">{{ f.nom | uppercase }}</a></li>
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  </div>
+				    
+					
+				  <div style="overflow-y: scroll; height: 400px;" ng-controller="AjouterUserCtrl">
+				  
+					<div class="panel-body" ng-repeat="u in users | filter:query">
+					
+						<ul class="todo-list" >
+							<li class="todo-list-item">
+								<span>{{ u.username | uppercase  }}</span>
+								
+								<div class="pull-right action-buttons">
+									
+									<a onclick="return confirm('Voulez-vous supprimer cette faculte?')"
+									 title="Supprimer" class="trash">
+										<em class="fa fa-trash"></em>
+									</a>
+									 
+									<a  title="Modifier" class="edit">
+										<em class="fa fa-edit"></em>
+									</a>
+									<a th:href="" title="détail" class="trash">
+										<em class="fa fa-more"></em>
+									</a>
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+				  </div>
+				  
+				  <div id="fil" class="tab-pane fade">
+				  
+				  <div class="row">
+				  	<div class="col-md-6">
+				  		<form>
+							<div class="form-inline">
+								<input type="text" class="form-control" placeholder="Rercherche" ng-model="query" />
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFaculteCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Faculté
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="f in facultes">{{ f.nom | uppercase}}</a></li>
+						    
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				 
+				  	
+					
+				  </div>
+				    
+					
+				    <div style="overflow-y: scroll; height: 400px;" ng-controller="AjouterFiliereCtrl">
+				    
+					<div class="panel-body" ng-repeat="f in filieres | filter:query" >
+					
+						<ul class="todo-list" >
+							<li class="todo-list-item">
+								<span>{{ f.nom | uppercase  }}</span>
+								
+								<div class="pull-right action-buttons">
+									
+									<a onclick="return confirm('Voulez-vous supprimer cette faculte?')"
+									 title="Supprimer" class="trash">
+										<em class="fa fa-trash"></em>
+									</a>
+									 
+									<a  title="Modifier" class="edit">
+										<em class="fa fa-edit"></em>
+									</a>
+									<a th:href="" title="détail" class="trash">
+										<em class="fa fa-more"></em>
+									</a>
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+				  </div>
+				  
+				    <div id="cl" class="tab-pane fade">
+				  <div class="row">
+				  	<div class="col-md-6">
+				  		<form>
+							<div class="form-inline">
+								<input type="text" class="form-control" placeholder="Rercherche" ng-model="query" />
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterFiliereCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filière
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="f in filieres">{{ f.nom | uppercase }}</a></li>
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  	
+				  </div>
+				    
+				 <div style="overflow-y: scroll; height: 400px;" ng-controller="AjouterClasseCtrl">
+					<div class="panel-body" ng-repeat="c in classes | filter:query">
+					
+						<ul class="todo-list" >
+							<li class="todo-list-item">
+								<span>{{ c.nom | uppercase }}</span>
+								
+								<div class="pull-right action-buttons">
+									
+									<a onclick="return confirm('Voulez-vous supprimer cette faculte?')"
+									 title="Supprimer" class="trash">
+										<em class="fa fa-trash"></em>
+									</a>
+									 
+									<a  title="Modifier" class="edit">
+										<em class="fa fa-edit"></em>
+									</a>
+									<a th:href="" title="détail" class="trash">
+										<em class="fa fa-more"></em>
+									</a>
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+				  </div>
+				 <div id="ue" class="tab-pane fade">
+				  <div class="row">
+				  	<div class="col-md-6">
+				  		<form>
+							<div class="form-inline">
+								<input type="text" class="form-control" placeholder="Rercherche" ng-model="query"/>
+							</div>
+						</form>
+				  	</div>
+				  	<div class="col-md-2">
+				  		<div class="dropdown" ng-controller="AjouterClasseCtrl">
+						  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Classe
+						  <span class="caret"></span></button>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" ng-repeat="c in classes">{{ c.nom | uppercase }}</a></li>
+						  </ul>
+					   </div>
+				  	
+				  	</div>
+				  	
+			
+					
+				  </div>
+				    
+					
+				    <div style="overflow-y: scroll; height: 400px;" ng-controller="AjouterUECtrl">
+					<div class="panel-body" ng-repeat="ue in ues | filter:query">
+					
+						<ul class="todo-list" >
+							<li class="todo-list-item">
+								<span> {{ ue.nom | uppercase }}</span>
+								
+								<div class="pull-right action-buttons">
+									
+									<a onclick="return confirm('Voulez-vous supprimer cette faculte?')"
+									 title="Supprimer" class="trash">
+										<em class="fa fa-trash"></em>
+									</a>
+									 
+									<a  title="Modifier" class="edit">
+										<em class="fa fa-edit"></em>
+									</a>
+									<a href="" title="détail" class="trash">
+										<em class="fa fa-more"></em>
+									</a>
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+				</div>
+				  </div>
+				</div>
+		  	</div>
+		</div>
+
+		
+	</div>	<!--/.main-->
+	
+	
+	
+	<script src="bootstrap/js/jquery-1.11.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js" ></script>
+	<script src="bootstrap/js/chart.min.js" ></script>
+	<script src="bootstrap/js/chart-data.js"></script>
+	<script src="bootstrap/js/easypiechart.js" ></script>
+	<script src="bootstrap/js/easypiechart-data.js"></script>
+	<script src="bootstrap/js/bootstrap-datepicker.js"></script>
+	<script src="bootstrap/js/custom.js"></script>
+	<script src="js/angular.min.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/script_grid.js" ></script>
+	 
+</body>
+</html>
